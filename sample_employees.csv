@@ -1,0 +1,21 @@
+EmployeeID,Name,Department,Position,Salary,Email,Phone,HireDate,Location,Manager
+EMP001,John Smith,Engineering,Senior Developer,85000,john.smith@company.com,+1-555-0101,2022-03-15,New York,Alice Johnson
+EMP002,Sarah Wilson,Marketing,Marketing Manager,72000,sarah.wilson@company.com,+1-555-0102,2021-11-08,Los Angeles,David Brown
+EMP003,Michael Chen,Finance,Financial Analyst,68000,michael.chen@company.com,+1-555-0103,2023-01-20,Chicago,Emma Davis
+EMP004,Emily Rodriguez,HR,HR Specialist,62000,emily.rodriguez@company.com,+1-555-0104,2022-07-12,Houston,Frank Miller
+EMP005,David Thompson,Sales,Sales Representative,58000,david.thompson@company.com,+1-555-0105,2023-04-05,Phoenix,Lisa Anderson
+EMP006,Jessica Lee,Engineering,QA Engineer,75000,jessica.lee@company.com,+1-555-0106,2022-09-18,Denver,Alice Johnson
+EMP007,Robert Garcia,IT,System Administrator,70000,robert.garcia@company.com,+1-555-0107,2021-12-03,Seattle,Mark Wilson
+EMP008,Amanda Martinez,Marketing,Content Creator,65000,amanda.martinez@company.com,+1-555-0108,2023-02-14,Miami,David Brown
+EMP009,Christopher Taylor,Finance,Accountant,67000,christopher.taylor@company.com,+1-555-0109,2022-05-22,Atlanta,Emma Davis
+EMP010,Nicole Anderson,HR,Recruiter,63000,nicole.anderson@company.com,+1-555-0110,2023-06-10,Boston,Frank Miller
+EMP011,Kevin Johnson,Sales,Account Manager,72000,kevin.johnson@company.com,+1-555-0111,2022-08-30,Dallas,Lisa Anderson
+EMP012,Rachel Brown,Engineering,Frontend Developer,78000,rachel.brown@company.com,+1-555-0112,2023-01-15,San Francisco,Alice Johnson
+EMP013,Daniel Davis,IT,Network Engineer,73000,daniel.davis@company.com,+1-555-0113,2022-10-25,Portland,Mark Wilson
+EMP014,Michelle Wilson,Marketing,Social Media Manager,68000,michelle.wilson@company.com,+1-555-0114,2023-03-08,Austin,David Brown
+EMP015,Andrew Miller,Finance,Financial Controller,82000,andrew.miller@company.com,+1-555-0115,2021-09-12,Philadelphia,Emma Davis
+EMP016,Lisa Thompson,HR,Benefits Coordinator,61000,lisa.thompson@company.com,+1-555-0116,2023-05-20,Detroit,Frank Miller
+EMP017,Ryan Garcia,Sales,Sales Director,95000,ryan.garcia@company.com,+1-555-0117,2022-01-30,San Diego,Lisa Anderson
+EMP018,Jennifer Lee,Engineering,Backend Developer,80000,jennifer.lee@company.com,+1-555-0118,2023-07-05,Minneapolis,Alice Johnson
+EMP019,Thomas Rodriguez,IT,DevOps Engineer,76000,thomas.rodriguez@company.com,+1-555-0119,2022-11-18,Orlando,Mark Wilson
+EMP020,Stephanie Chen,Marketing,Brand Manager,75000,stephanie.chen@company.com,+1-555-0120,2023-04-12,Nashville,David Brown 
