@@ -4,22 +4,19 @@ require('dotenv').config();
 
 const importSampleDataToUniversal = async () => {
   const connection = await mysql.createConnection({
-    host: '127.0.0.1', // Force IPv4
+    host: '127.0.0.1',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'bmw_datagrid'
   });
 
   try {
-    // Check if there's any existing data to import
     const [tables] = await connection.execute('SHOW TABLES');
     console.log('Available tables:', tables.map(t => Object.values(t)[0]));
 
-    // Clear existing universal data
     await connection.execute('DELETE FROM universal_data');
     console.log('Cleared existing universal data');
 
-    // Import sample data if available
     const sampleData = [
       {
         id: uuidv4(),

@@ -5,10 +5,9 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const mysql = require('mysql2/promise');
 
-// Database connection
 const getConnection = async () => {
   return mysql.createConnection({
-    host: '127.0.0.1', // Force IPv4
+    host: '127.0.0.1',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'bmw_datagrid',
@@ -19,7 +18,6 @@ const { isAuthenticated } = require('../config/auth');
 
 const router = express.Router();
 
-// Configure multer for CSV uploads
 const upload = multer({
   dest: 'uploads/',
   fileFilter: (req, file, cb) => {
@@ -31,7 +29,6 @@ const upload = multer({
   }
 });
 
-// Create a new grid with CSV data
 router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, res) => {
   let connection;
   
@@ -49,7 +46,6 @@ router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, re
 
     connection = await getConnection();
 
-    // If this is a replacement, delete all existing data for this grid
     if (isReplacement === 'true' && existingGridId) {
       await connection.execute(
         'DELETE FROM universal_data WHERE grid_id = ? AND added_by = ?',
@@ -57,7 +53,6 @@ router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, re
       );
     }
 
-    // Create the grid record only if it doesn't exist
     if (!existingGridId) {
       await connection.execute(
         'INSERT INTO user_grids (id, name, added_by) VALUES (?, ?, ?)',
@@ -65,23 +60,19 @@ router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, re
       );
     }
 
-    // Parse CSV and insert data
     const csvResults = [];
     let csvColumnOrder = [];
     let isFirstRow = true;
     
-    // Use a Promise to handle the CSV parsing
     const parseCSV = new Promise((resolve, reject) => {
       fs.createReadStream(req.file.path)
         .pipe(csv({ trim: true, skipEmptyLines: true }))
         .on('data', (data) => {
-          // Store column order from first row
           if (isFirstRow) {
             csvColumnOrder = Object.keys(data);
             isFirstRow = false;
           }
           
-          // Clean the data by trimming all values
           const cleanedData = {};
           csvColumnOrder.forEach(key => {
             cleanedData[key] = data[key] ? data[key].trim() : '';
@@ -92,10 +83,8 @@ router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, re
         .on('error', (error) => reject(error));
     });
 
-    // Wait for CSV parsing to complete
     const { results, columnOrder } = await parseCSV;
 
-    // Insert all rows into universal_data with grid_id
     for (const row of results) {
       const recordId = uuidv4();
       await connection.execute(
@@ -104,13 +93,11 @@ router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, re
       );
     }
 
-    // Store column order in user_grids table
     await connection.execute(
       'UPDATE user_grids SET column_order = ? WHERE id = ?',
       [JSON.stringify(columnOrder), gridId]
     );
 
-    // Clean up uploaded file
     fs.unlinkSync(req.file.path);
 
     const message = isReplacement === 'true' 
@@ -125,7 +112,6 @@ router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, re
     });
 
   } catch (error) {
-    console.error('Error creating grid:', error);
     res.status(500).json({ 
       success: false, 
       error: 'Failed to create grid' 
@@ -137,7 +123,6 @@ router.post('/create', isAuthenticated, upload.single('csvFile'), async (req, re
   }
 });
 
-// Get all grids for the authenticated user
 router.get('/', isAuthenticated, async (req, res) => {
   const connection = await getConnection();
   
@@ -156,7 +141,6 @@ router.get('/', isAuthenticated, async (req, res) => {
       grids: rows
     });
   } catch (error) {
-    console.error('Error fetching grids:', error);
     res.status(500).json({ 
       success: false, 
       error: 'Failed to fetch grids' 
@@ -166,7 +150,6 @@ router.get('/', isAuthenticated, async (req, res) => {
   }
 });
 
-// Update grid name
 router.put('/:id', isAuthenticated, async (req, res) => {
   const connection = await getConnection();
   
@@ -197,7 +180,6 @@ router.put('/:id', isAuthenticated, async (req, res) => {
       message: 'Grid name updated successfully'
     });
   } catch (error) {
-    console.error('Error updating grid:', error);
     res.status(500).json({ 
       success: false, 
       error: 'Failed to update grid' 
@@ -207,7 +189,6 @@ router.put('/:id', isAuthenticated, async (req, res) => {
   }
 });
 
-// Get grid details by ID
 router.get('/:id', isAuthenticated, async (req, res) => {
   const connection = await getConnection();
   
@@ -229,7 +210,6 @@ router.get('/:id', isAuthenticated, async (req, res) => {
       grid: rows[0]
     });
   } catch (error) {
-    console.error('Error fetching grid:', error);
     res.status(500).json({ 
       success: false, 
       error: 'Failed to fetch grid' 
@@ -239,18 +219,15 @@ router.get('/:id', isAuthenticated, async (req, res) => {
   }
 });
 
-// Delete a grid and all its data
 router.delete('/:id', isAuthenticated, async (req, res) => {
   const connection = await getConnection();
   
   try {
-    // Delete all data associated with this grid
     await connection.execute(
       'DELETE FROM universal_data WHERE grid_id = ? AND added_by = ?',
       [req.params.id, req.user.id]
     );
 
-    // Delete the grid
     const [result] = await connection.execute(
       'DELETE FROM user_grids WHERE id = ? AND added_by = ?',
       [req.params.id, req.user.id]
@@ -268,7 +245,6 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
       message: 'Grid deleted successfully'
     });
   } catch (error) {
-    console.error('Error deleting grid:', error);
     res.status(500).json({ 
       success: false, 
       error: 'Failed to delete grid' 

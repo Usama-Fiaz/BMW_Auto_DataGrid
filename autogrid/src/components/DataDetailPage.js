@@ -51,7 +51,6 @@ const DataDetailPage = () => {
         const result = await response.json();
         setData(result);
 
-        // Fetch grid name if grid_id exists
         if (result.grid_id) {
           try {
             const gridResponse = await fetch(`http://localhost:5001/api/grids/${result.grid_id}`, {
@@ -62,11 +61,9 @@ const DataDetailPage = () => {
               setGridName(gridData.grid.name);
             }
           } catch (err) {
-            console.error('Error fetching grid name:', err);
           }
         }
 
-        // Fetch user name
         try {
           const userResponse = await fetch(`http://localhost:5001/api/auth/users/${result.added_by}`, {
             headers
@@ -75,12 +72,10 @@ const DataDetailPage = () => {
             const userData = await userResponse.json();
             setUserName(userData.user.name || userData.user.email);
           } else {
-            // If user not found, try to extract from Firebase user data or use a fallback
-            setUserName(result.added_by.substring(0, 8) + '...'); // Show first 8 chars of ID
+            setUserName(result.added_by.substring(0, 8) + '...');
           }
         } catch (err) {
-          console.error('Error fetching user name:', err);
-          setUserName(result.added_by.substring(0, 8) + '...'); // Show first 8 chars of ID
+          setUserName(result.added_by.substring(0, 8) + '...');
         }
 
       } catch (err) {
@@ -143,7 +138,6 @@ const DataDetailPage = () => {
     );
   }
 
-  // Parse the JSON data
   const jsonData = typeof data.data === 'string' ? JSON.parse(data.data) : data.data;
 
   return (

@@ -46,7 +46,6 @@ const GridManagement = ({ onGridSelect }) => {
     severity: 'success'
   });
 
-  // Fetch user's grids
   const fetchGrids = useCallback(async () => {
     try {
       setLoading(true);
@@ -64,7 +63,6 @@ const GridManagement = ({ onGridSelect }) => {
       setGrids(data.grids || []);
     } catch (err) {
       setError('Failed to load grids');
-      console.error('Error fetching grids:', err);
     } finally {
       setLoading(false);
     }
@@ -74,7 +72,6 @@ const GridManagement = ({ onGridSelect }) => {
     fetchGrids();
   }, [fetchGrids]);
 
-  // Handle file selection
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type === 'text/csv') {
@@ -84,7 +81,6 @@ const GridManagement = ({ onGridSelect }) => {
     }
   };
 
-  // Create new grid
   const handleCreateGrid = async () => {
     if (!formData.name.trim() || !formData.csvFile) {
       setError('Please provide a grid name and select a CSV file');
@@ -114,14 +110,11 @@ const GridManagement = ({ onGridSelect }) => {
 
       const result = await response.json();
       
-      // Refresh grids list
       await fetchGrids();
       
-      // Close dialog and reset form
       setCreateDialogOpen(false);
               setFormData({ name: '', csvFile: null });
       
-      // Show success message
       setSnackbar({
         open: true,
         message: `Grid created successfully! ${result.recordsInserted} records imported.`,
@@ -135,7 +128,6 @@ const GridManagement = ({ onGridSelect }) => {
     }
   };
 
-  // Delete grid
   const handleDeleteGrid = async () => {
     if (!selectedGrid) return;
 
@@ -151,12 +143,10 @@ const GridManagement = ({ onGridSelect }) => {
         throw new Error('Failed to delete grid');
       }
 
-      // Refresh grids list
       await fetchGrids();
       setDeleteDialogOpen(false);
       setSelectedGrid(null);
       
-      // Show success message
       setSnackbar({
         open: true,
         message: `Grid "${selectedGrid.name}" deleted successfully`,
@@ -165,11 +155,9 @@ const GridManagement = ({ onGridSelect }) => {
       
     } catch (err) {
       setError('Failed to delete grid');
-      console.error('Error deleting grid:', err);
     }
   };
 
-  // Select grid
   const handleGridSelect = (grid) => {
     onGridSelect(grid);
   };
@@ -219,8 +207,8 @@ const GridManagement = ({ onGridSelect }) => {
             onClick={() => setCreateDialogOpen(true)}
             sx={{ borderRadius: 2, color: '#000000 !important' ,'&:hover': {
       color: '#000000 !important',
-      borderColor: '#000000', // Optional: keep border black on hover
-      backgroundColor: '#f5f5f5', // Optional: subtle hover background
+      borderColor: '#000000',
+      backgroundColor: '#f5f5f5',
     },}}
           >
             Create Your First Grid

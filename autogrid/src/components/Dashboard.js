@@ -36,17 +36,16 @@ const Dashboard = () => {
   };
 
   const handleTabChange = (event, newValue) => {
-    // If switching to Data Management tab but no grid is selected, stay on My Grids
     if (newValue === 1 && !selectedGrid) {
-      return; // Don't change tabs
+      return;
     }
     setActiveTab(newValue);
-    setSelectedGrid(null); // Reset selected grid when switching tabs
+    setSelectedGrid(null);
   };
 
   const handleGridSelect = (grid) => {
     setSelectedGrid(grid);
-    setActiveTab(1); // Switch to data management tab
+    setActiveTab(1);
   };
 
 

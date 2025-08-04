@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-// JWT Configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key';
 
-// Generate JWT token
 const generateToken = (user) => {
   return jwt.sign(
     { 
@@ -16,7 +14,6 @@ const generateToken = (user) => {
   );
 };
 
-// Verify JWT token
 const verifyToken = (token) => {
   try {
     return jwt.verify(token, JWT_SECRET);
@@ -25,7 +22,6 @@ const verifyToken = (token) => {
   }
 };
 
-// Middleware to check if user is authenticated
 const isAuthenticated = (req, res, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   
@@ -34,11 +30,9 @@ const isAuthenticated = (req, res, next) => {
   }
   
   try {
-    // First try to verify as JWT token
     const decoded = verifyToken(token);
     
     if (decoded) {
-      // Valid JWT token - use the user data from the token
       req.user = {
         id: decoded.id,
         email: decoded.email,
@@ -47,7 +41,6 @@ const isAuthenticated = (req, res, next) => {
       console.log('🔐 Authentication successful - User ID:', req.user.id);
       next();
     } else {
-      // If not a valid JWT, treat as Firebase token (for backward compatibility)
       const crypto = require('crypto');
       const userId = crypto.createHash('md5').update(token).digest('hex');
       

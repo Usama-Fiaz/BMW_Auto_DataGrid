@@ -39,7 +39,6 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   
-  // Form states
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -64,17 +63,14 @@ const LoginPage = () => {
       const user = result.user;
       const idToken = await user.getIdToken();
 
-      console.log("ID Token:", idToken);
-      console.log("User data:", user);
+
       
-      // Create user data object
       const userData = {
         id: user.uid,
         email: user.email,
         name: user.displayName || 'Google User'
       };
 
-      // Call backend to create/verify user in database
       const response = await fetch('http://localhost:5001/api/auth/firebase/verify', {
         method: 'POST',
         headers: {
@@ -92,19 +88,16 @@ const LoginPage = () => {
         throw new Error(data.error || 'Firebase authentication failed');
       }
 
-      // Store user data and token
       localStorage.setItem('userData', JSON.stringify(data.user));
       localStorage.setItem('authToken', data.token);
       
       setSuccess('Sign-in successful! Redirecting...');
       
-      // Redirect to dashboard
       setTimeout(() => {
         window.location.href = '/dashboard';
       }, 1500);
       
     } catch (error) {
-      console.error("Error during sign-in:", error);
       setError('Sign-in failed. Please try again.');
     } finally {
       setLoading(false);
@@ -116,22 +109,18 @@ const LoginPage = () => {
     setError('');
 
     try {
-      // Enhanced validation
       if (isRegistering) {
-        // Registration validation
         if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
           setError('All fields are required');
           return;
         }
 
-        // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
           setError('Please enter a valid email address');
           return;
         }
 
-        // Password validation
         if (formData.password.length < 6) {
           setError('Password must be at least 6 characters long');
           return;
@@ -142,13 +131,11 @@ const LoginPage = () => {
           return;
         }
       } else {
-        // Login validation
         if (!formData.email || !formData.password) {
           setError('Email and password are required');
           return;
         }
 
-        // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
           setError('Please enter a valid email address');
@@ -175,19 +162,16 @@ const LoginPage = () => {
         throw new Error(data.error || 'Authentication failed');
       }
 
-      // Store user data and token
       localStorage.setItem('userData', JSON.stringify(data.user));
       localStorage.setItem('authToken', data.token);
       
       setSuccess(`${isRegistering ? 'Registration' : 'Login'} successful!`);
       
-      // Redirect to dashboard after a short delay
       setTimeout(() => {
         window.location.href = '/dashboard';
       }, 1500);
 
     } catch (error) {
-      console.error('Authentication error:', error);
       setError(error.message || 'Authentication failed');
     } finally {
       setLoading(false);

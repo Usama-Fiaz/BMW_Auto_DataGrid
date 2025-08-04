@@ -7,26 +7,13 @@ class FirebaseAuthService {
     this.auth = auth;
   }
 
-  // Sign in with Google popup
   async signInWithGoogle() {
     try {
-      console.log('🔄 Starting Google sign-in popup...');
-      
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      
-      console.log('✅ Google sign-in successful:', {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL
-      });
 
-      // Get ID token
       const idToken = await user.getIdToken();
-      console.log('🔑 ID Token retrieved:', idToken.substring(0, 50) + '...');
 
-      // Store user data and token
       const userData = {
         id: user.uid,
         email: user.email,
@@ -41,8 +28,6 @@ class FirebaseAuthService {
       return { success: true, user: userData, token: idToken };
 
     } catch (error) {
-      console.error('❌ Firebase sign-in error:', error);
-      
       let errorMessage = 'Sign-in failed';
       
       switch (error.code) {
@@ -73,12 +58,8 @@ class FirebaseAuthService {
     }
   }
 
-  // Send ID token to backend
   async sendTokenToBackend(token, userData) {
     try {
-      console.log('📤 Sending ID token to backend...');
-      console.log('👤 User data being sent:', userData);
-      
       const response = await axios.post(`${this.baseURL}/auth/firebase/verify`, {
         idToken: token,
         userData: userData
@@ -88,26 +69,17 @@ class FirebaseAuthService {
         }
       });
 
-      console.log('✅ Backend verification successful:', response.data);
       return { success: true, data: response.data };
 
     } catch (error) {
-      console.error('❌ Backend verification failed:', error);
-      
       let errorMessage = 'Backend verification failed';
       
       if (error.response) {
-        // Server responded with error
         errorMessage = error.response.data?.error || `Server error: ${error.response.status}`;
-        console.error('Server error details:', error.response.data);
       } else if (error.request) {
-        // Request was made but no response
         errorMessage = 'No response from server. Please check your connection.';
-        console.error('Network error:', error.request);
       } else {
-        // Something else happened
         errorMessage = error.message || 'An unexpected error occurred';
-        console.error('Request setup error:', error.message);
       }
 
       return { 
@@ -117,27 +89,22 @@ class FirebaseAuthService {
     }
   }
 
-  // Get current user
   getCurrentUser() {
     const userData = localStorage.getItem('userData');
     return userData ? JSON.parse(userData) : null;
   }
 
-  // Get current token
   getCurrentToken() {
     return localStorage.getItem('firebaseToken');
   }
 
-  // Sign out
   async signOut() {
     try {
       await auth.signOut();
       localStorage.removeItem('userData');
       localStorage.removeItem('firebaseToken');
-      console.log('✅ Sign-out successful');
       return { success: true };
     } catch (error) {
-      console.error('❌ Sign-out error:', error);
       return { 
         success: false, 
         error: error.message 
@@ -145,7 +112,6 @@ class FirebaseAuthService {
     }
   }
 
-  // Listen to auth state changes
   onAuthStateChanged(callback) {
     return onAuthStateChanged(auth, callback);
   }

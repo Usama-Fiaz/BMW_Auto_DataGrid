@@ -83,7 +83,6 @@ export default function DataManagementPage({ selectedGrid }) {
 
       setSuccess('Grid name updated successfully');
       handleCloseEditDialog();
-      // Trigger refresh to update the grid name in the UI
       window.location.reload();
     } catch (error) {
       setError(error.message || 'Failed to update grid name');

@@ -15,10 +15,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
 
-  // Check if user is authenticated on app load
   useEffect(() => {
     const checkAuth = async () => {
-      // Check for both authToken (JWT) and firebaseToken
       const storedToken = localStorage.getItem('authToken') || localStorage.getItem('firebaseToken');
       const storedUserData = localStorage.getItem('userData');
       
@@ -30,7 +28,6 @@ export const AuthProvider = ({ children }) => {
           console.log('✅ Authentication restored from localStorage:', userData);
         } catch (error) {
           console.error('Failed to parse stored user data:', error);
-          // Clear invalid data
           localStorage.removeItem('authToken');
           localStorage.removeItem('firebaseToken');
           localStorage.removeItem('userData');
@@ -38,7 +35,6 @@ export const AuthProvider = ({ children }) => {
           setUser(null);
         }
       } else {
-        // No valid authentication found
         setToken(null);
         setUser(null);
       }
@@ -56,7 +52,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      // Call logout endpoint to update user status
       if (token) {
         await fetch('http://localhost:5001/api/auth/logout', {
           method: 'POST',
@@ -69,7 +64,6 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout API call failed:', error);
     } finally {
-      // Clear local storage regardless of API call success
       localStorage.removeItem('authToken');
       localStorage.removeItem('firebaseToken');
       localStorage.removeItem('userData');

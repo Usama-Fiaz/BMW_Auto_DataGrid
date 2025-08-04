@@ -15,10 +15,8 @@ const AuthCallback = () => {
     const token = searchParams.get('token');
     
     if (token) {
-      // Store the token in localStorage
       localStorage.setItem('authToken', token);
       
-      // Decode the token to get user info
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const userData = {
@@ -28,17 +26,13 @@ const AuthCallback = () => {
           picture: 'https://via.placeholder.com/150'
         };
         
-        // Store user data in localStorage for immediate access
         localStorage.setItem('userData', JSON.stringify(userData));
         
-        // Redirect to the main dashboard
         navigate('/dashboard');
       } catch (error) {
-        console.error('Token decode failed:', error);
         navigate('/login');
       }
     } else {
-      // No token received, redirect to login
       navigate('/login');
     }
   }, [searchParams, navigate]);

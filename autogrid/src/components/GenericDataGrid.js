@@ -33,10 +33,8 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 
 
-// Register all community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-// Custom CSS for AG Grid filter popup styling and button text colors
 const customFilterStyles = `
     /* Button text color fixes */
     /* White background buttons - Black text */
@@ -255,7 +253,7 @@ const GenericDataGrid = ({
   const [deleteItem, setDeleteItem] = useState(null);
   const [gridApi, setGridApi] = useState(null);
   const [filters, setFilters] = useState({});
-  const [activeFilters, setActiveFilters] = useState({}); // Track all active filters manually
+  const [activeFilters, setActiveFilters] = useState({});
 
   const [currentPageSize, setCurrentPageSize] = useState(pageSize);
   const [rowData, setRowData] = useState([]);
@@ -264,7 +262,6 @@ const GenericDataGrid = ({
   const [totalPages, setTotalPages] = useState(1);
   const [columns, setColumns] = useState([]);
 
-  // Inject custom filter styles
   useEffect(() => {
     const styleElement = document.createElement('style');
     styleElement.textContent = customFilterStyles;
@@ -275,22 +272,19 @@ const GenericDataGrid = ({
     };
   }, []);
 
-  // Fix for button text color issues
   useEffect(() => {
     const fixButtonTextColors = () => {
-      // Fix button text colors based on background
       const buttons = document.querySelectorAll('.MuiButton-root');
       buttons.forEach(button => {
         const style = window.getComputedStyle(button);
         const backgroundColor = style.backgroundColor;
         const bgColor = style.getPropertyValue('background-color');
         
-        // Check if button has colored background
         if (backgroundColor && (
-          backgroundColor.includes('rgb(25, 118, 210)') || // primary blue
-          backgroundColor.includes('rgb(40, 167, 69)') || // success green
-          backgroundColor.includes('rgb(220, 53, 69)') || // error red
-          backgroundColor.includes('rgb(108, 117, 125)') || // secondary gray
+          backgroundColor.includes('rgb(25, 118, 210)') ||
+          backgroundColor.includes('rgb(40, 167, 69)') ||
+          backgroundColor.includes('rgb(220, 53, 69)') ||
+          backgroundColor.includes('rgb(108, 117, 125)') ||
           backgroundColor.includes('1976d2') ||
           backgroundColor.includes('28a745') ||
           backgroundColor.includes('dc3545') ||
@@ -307,10 +301,8 @@ const GenericDataGrid = ({
       });
     };
 
-    // Run immediately
     fixButtonTextColors();
     
-    // Run after a short delay to catch any late-rendering buttons
     const timeoutId = setTimeout(fixButtonTextColors, 100);
     
     return () => {
@@ -318,30 +310,20 @@ const GenericDataGrid = ({
     };
   }, []);
 
-  // Detect columns from data
   const detectColumnsFromData = useCallback((data, columnOrder = null) => {
     if (!data || !Array.isArray(data) || data.length === 0) {
-      console.log('No data provided for column detection');
       return [];
     }
 
-    console.log('Detecting columns from data:', data.length, 'rows');
-    console.log('Sample data row:', data[0]);
-
-    // Use columnOrder if provided, otherwise detect from data
     let fields = [];
     if (columnOrder && Array.isArray(columnOrder)) {
       fields = columnOrder;
-      console.log('Using provided column order:', fields);
     } else {
-      // Detect fields from the first row
       const firstRow = data[0];
       if (!firstRow) {
-        console.log('No first row found');
         return [];
       }
 
-      // Handle nested data structure
       let jsonData;
       try {
         if (firstRow.data) {
@@ -350,17 +332,14 @@ const GenericDataGrid = ({
           jsonData = firstRow;
         }
       } catch (error) {
-        console.error('Error parsing first row data:', error);
         return [];
       }
 
       if (!jsonData || typeof jsonData !== 'object') {
-        console.log('Invalid JSON data structure');
         return [];
       }
 
       fields = Object.keys(jsonData).filter(field => field !== null && field !== undefined);
-      console.log('Detected fields:', fields);
     }
     
     if (!Array.isArray(fields) || fields.length === 0) return [];
@@ -368,7 +347,6 @@ const GenericDataGrid = ({
     const detectedColumns = fields.map(field => {
       if (!field || typeof field !== 'string') return null;
       
-      // Get the value from the first row for type detection
       let sampleValue = null;
       try {
         if (data[0] && data[0].data) {
@@ -378,20 +356,17 @@ const GenericDataGrid = ({
           sampleValue = data[0][field];
         }
       } catch (error) {
-        console.error('Error getting sample value for field:', field, error);
       }
       
       let filterType = 'agTextColumnFilter';
       let filterOptions = ['contains', 'equals', 'startsWith', 'endsWith', 'isEmpty'];
       
-      // Check if numeric - handle both string numbers and actual numbers
       const numValue = typeof sampleValue === 'string' ? sampleValue.trim() : sampleValue;
       if (typeof sampleValue === 'number' || (typeof numValue === 'string' && !isNaN(Number(numValue)) && numValue !== '')) {
         filterType = 'agNumberColumnFilter';
         filterOptions = ['equals', 'greaterThan', 'lessThan'];
       }
       
-      // Check if date
       if (sampleValue && (typeof sampleValue === 'string' && (sampleValue.includes('-') || sampleValue.includes('/')))) {
         const dateValue = new Date(sampleValue);
         if (!isNaN(dateValue.getTime())) {
@@ -422,17 +397,14 @@ const GenericDataGrid = ({
             return null;
           }
           
-          // Handle the nested data structure
           let jsonData;
           try {
             if (params.data.data) {
               jsonData = typeof params.data.data === 'string' ? JSON.parse(params.data.data) : params.data.data;
             } else {
-              // If no nested data, use the row directly
               jsonData = params.data;
             }
           } catch (error) {
-            console.error('Error parsing data in valueGetter:', error);
             return null;
           }
           
@@ -441,12 +413,10 @@ const GenericDataGrid = ({
         valueFormatter: (params) => {
           if (!params.value) return '-';
           
-          // Format numbers with commas
           if (typeof params.value === 'number') {
             return params.value.toLocaleString();
           }
           
-          // Format dates
           if (params.value && typeof params.value === 'string' && (params.value.includes('-') || params.value.includes('/'))) {
             const date = new Date(params.value);
             if (!isNaN(date.getTime())) {
@@ -459,17 +429,14 @@ const GenericDataGrid = ({
         filterValueGetter: (params) => {
           if (!params.data) return null;
           
-          // Handle the nested data structure
           let jsonData;
           try {
             if (params.data.data) {
               jsonData = typeof params.data.data === 'string' ? JSON.parse(params.data.data) : params.data.data;
             } else {
-              // If no nested data, use the row directly
               jsonData = params.data;
             }
           } catch (error) {
-            console.error('Error parsing data in filterValueGetter:', error);
             return null;
           }
           
@@ -480,22 +447,20 @@ const GenericDataGrid = ({
           return value;
         }
       };
-    }).filter(col => col !== null); // Remove any null columns
+    }).filter(col => col !== null);
 
     return detectedColumns;
   }, []);
 
-  // Build column definitions
   const columnDefs = useMemo(() => {
     if (columns.length === 0) {
       return [];
     }
     
     const dataColumns = columns.map(col => {
-      // Calculate width based on header text length
       const headerLength = col.headerName ? col.headerName.length : 10;
-      const baseWidth = Math.max(200, headerLength * 25); // Increased from 18px to 25px per character, minimum 200px
-      const calculatedWidth = Math.min(baseWidth, 800); // Increased cap from 600px to 800px
+      const baseWidth = Math.max(200, headerLength * 25);
+      const calculatedWidth = Math.min(baseWidth, 800);
       
       const columnDef = {
         field: col.field,
@@ -503,8 +468,8 @@ const GenericDataGrid = ({
         sortable: col.sortable !== false,
         filter: col.filter !== false,
         width: col.width || calculatedWidth,
-        minWidth: Math.max(200, headerLength * 20), // Increased minimum width calculation
-        maxWidth: Math.min(1000, headerLength * 30), // Increased maximum width calculation
+        minWidth: Math.max(200, headerLength * 20),
+        maxWidth: Math.min(1000, headerLength * 30),
         flex: 1,
         filterParams: col.filterParams,
         valueGetter: col.valueGetter,
@@ -519,7 +484,6 @@ const GenericDataGrid = ({
       return columnDef;
     });
 
-    // Actions column
     const actionsColumn = {
       headerName: 'Actions',
       field: 'actions',
@@ -566,7 +530,6 @@ const GenericDataGrid = ({
     return [...dataColumns, actionsColumn];
   }, [columns, actions]);
 
-  // Load data function
   const loadData = useCallback(async (page = 1, pageSize = currentPageSize, sortBy = null, sortOrder = null, searchValue = null) => {
     setLoading(true);
     try {
@@ -575,14 +538,12 @@ const GenericDataGrid = ({
         limit: pageSize,
       };
 
-      // Use the passed searchValue or fall back to the current search state
       const currentSearch = searchValue !== null ? searchValue : search;
       
       if (currentSearch && currentSearch.trim() !== '') {
         queryParams.search = currentSearch.trim();
       }
 
-      // Use activeFilters instead of filters for API calls
       Object.entries(activeFilters).forEach(([key, value]) => {
         if (value) {
           queryParams[key] = value;
@@ -606,7 +567,6 @@ const GenericDataGrid = ({
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      // Build the URL properly by checking if apiUrl already has parameters
       const separator = apiUrl.includes('?') ? '&' : '?';
       const response = await fetch(`${apiUrl}${separator}${new URLSearchParams(queryParams)}`, {
         headers
@@ -623,7 +583,6 @@ const GenericDataGrid = ({
       setCurrentPage(page);
       setTotalPages(Math.ceil((data.total || 0) / pageSize));
 
-      // Auto-detect columns from data only if columns haven't been set yet OR if this is the first load
       if (newRowData.length > 0) {
         const detected = detectColumnsFromData(newRowData, columnOrder);
         setColumns(detected);
@@ -642,7 +601,6 @@ const GenericDataGrid = ({
         onSuccess(`Successfully loaded ${newRowData.length} records`);
       }
     } catch (error) {
-      console.error('Error loading data:', error);
       if (onError) {
         onError(error);
       }
@@ -651,48 +609,39 @@ const GenericDataGrid = ({
     }
   }, [apiUrl, token, search, activeFilters, currentPageSize, detectColumnsFromData, columnOrder, onDataLoad, onError, onSuccess]);
 
-  // Initial data load - only run once when component mounts
   useEffect(() => {
     loadData();
-  }, []); // Empty dependency array to run only once
+  }, []);
 
-  // Reload data when activeFilters change (but not on initial load)
   useEffect(() => {
     if (Object.keys(activeFilters).length > 0) {
       loadData(1, currentPageSize);
     }
   }, [activeFilters, currentPageSize, loadData]);
 
-  // Grid refresh is now handled by the key prop and onFirstDataRendered callback
-  // This avoids API method compatibility issues
-
   const onGridReady = useCallback((params) => {
     setGridApi(params.api);
-    console.log('Grid ready, loading data...');
     loadData(1, currentPageSize);
   }, [loadData, currentPageSize]);
 
-  // Function to convert activeFilters to proper AG Grid filter model
   const convertToAGGridFilterModel = useCallback((activeFilters) => {
     const convertedFilterModel = {};
 
     Object.entries(activeFilters).forEach(([key, value]) => {
       const parts = key.split('.');
       if (parts.length >= 3) {
-        const field = parts[1]; // Get the field name
-        const operator = parts[2]; // Get the operator
+        const field = parts[1];
+        const operator = parts[2];
         
         if (!convertedFilterModel[field]) {
           convertedFilterModel[field] = {};
         }
 
-        // Handle different operator types
         if (operator === 'isEmpty') {
           convertedFilterModel[field] = {
             type: 'isEmpty'
           };
         } else if (operator.endsWith('2')) {
-          // Handle second condition for numeric filters
           const baseOperator = operator.slice(0, -1);
           if (!convertedFilterModel[field].condition2) {
             convertedFilterModel[field].condition2 = {
@@ -701,7 +650,6 @@ const GenericDataGrid = ({
             };
           }
         } else {
-          // Handle first condition
           convertedFilterModel[field] = {
             type: operator,
             filter: value
@@ -710,11 +658,9 @@ const GenericDataGrid = ({
       }
     });
 
-    console.log('Converted filter model:', convertedFilterModel);
     return convertedFilterModel;
   }, []);
 
-  // Set filter model to sync with current filters
   const setFilterModel = useCallback(() => {
     if (!gridApi) return;
     
@@ -725,9 +671,6 @@ const GenericDataGrid = ({
   }, [gridApi, activeFilters, convertToAGGridFilterModel]);
 
   const handleSearch = useCallback(() => {
-    console.log('🔍 Search button clicked, search term:', search);
-    console.log('🔍 Search term length:', search ? search.length : 0);
-    console.log('🔍 Search term trimmed:', search ? search.trim() : '');
     loadData(1, currentPageSize);
   }, [loadData, currentPageSize, search]);
 
@@ -743,7 +686,6 @@ const GenericDataGrid = ({
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      // Handle URLs with query parameters properly
       const baseUrl = apiUrl.split('?')[0];
       const queryParams = apiUrl.includes('?') ? apiUrl.split('?')[1] : '';
       const deleteUrl = queryParams 
@@ -792,51 +734,39 @@ const GenericDataGrid = ({
         const filterModel = gridApi.getFilterModel ? gridApi.getFilterModel() : {};
         console.log('Current filter model:', filterModel);
       
-        // Convert AG Grid filter model to backend query parameters
         const newActiveFilters = {};
         
         Object.entries(filterModel).forEach(([field, filterData]) => {
-          // Skip metadata columns and actions
           if (field === 'id' || field === 'added_by' || field === 'created_at' || field === 'actions') {
             return;
           }
           
-          console.log(`Processing filter for field: ${field}`, filterData);
+
           
-          // Handle different filter structures
           if (filterData.type === 'isEmpty') {
             newActiveFilters[`${field}_isEmpty`] = 'true';
           } else if (filterData.filter && filterData.filter !== '') {
-            // Single condition filter
             newActiveFilters[`${field}_${filterData.type}`] = filterData.filter;
           } else if (filterData.condition1 && filterData.condition1.filter) {
-            // Two condition filter (AND/OR)
             newActiveFilters[`${field}_${filterData.condition1.type}`] = filterData.condition1.filter;
             if (filterData.condition2 && filterData.condition2.filter) {
               newActiveFilters[`${field}_${filterData.condition2.type}`] = filterData.condition2.filter;
-              // Add logic specification (default to OR, but can be overridden)
               newActiveFilters[`${field}_logic`] = filterData.operator || 'OR';
             }
           } else if (filterData.conditions && Array.isArray(filterData.conditions)) {
-            // Multiple conditions
             filterData.conditions.forEach((condition, index) => {
               if (condition.filter && condition.filter !== '') {
                 newActiveFilters[`${field}_${condition.type}`] = condition.filter;
               }
             });
-            // Add logic specification for multiple conditions
             if (filterData.conditions.length > 1) {
               newActiveFilters[`${field}_logic`] = filterData.operator || 'OR';
             }
           }
         });
         
-        console.log('Converted filters for backend:', newActiveFilters);
-        
-        // Merge with existing filters instead of replacing them
         setActiveFilters(prevFilters => {
           const mergedFilters = { ...prevFilters, ...newActiveFilters };
-          console.log('Merged filters:', mergedFilters);
           return mergedFilters;
         });
         
@@ -845,12 +775,10 @@ const GenericDataGrid = ({
           return mergedFilters;
         });
       } catch (error) {
-        console.warn('Filter model not available, skipping filter processing:', error);
       }
     }
   }, [gridApi, loadData, currentPageSize]);
 
-  // Function to sync filter popup with current filter state
   const syncFilterPopup = useCallback((columnApi, field) => {
     if (!columnApi || !field) return;
     
@@ -865,7 +793,6 @@ const GenericDataGrid = ({
       const filterInstance = column.getFilterInstance();
       
       if (filterInstance) {
-        // Set the filter type and value
         if (filterData.type) {
           filterInstance.setFilterType(filterData.type);
         }
@@ -874,22 +801,14 @@ const GenericDataGrid = ({
         }
       }
     } catch (error) {
-      console.warn('Filter model not available for sync:', error);
     }
   }, [gridApi]);
 
-  // Add filter modified event to track when filters are added/removed
   const onFilterModified = useCallback((event) => {
-    console.log('Filter modified:', event);
-    // This will be called when a filter is applied or removed
-    // We can use this to track filter changes more accurately
   }, []);
 
-  // Handle filter popup opened
   const onFilterOpened = useCallback((event) => {
-    console.log('Filter opened:', event);
     if (event.column && gridApi) {
-      // Sync the filter popup with current filter state
       setTimeout(() => {
         syncFilterPopup(gridApi.columnApi, event.column.getColId());
       }, 100);
@@ -899,7 +818,6 @@ const GenericDataGrid = ({
   const onSortChanged = useCallback((event) => {
     if (gridApi) {
       try {
-        // Try the newer API first
         const sortModel = gridApi.getSortModel ? gridApi.getSortModel() : [];
         if (sortModel && sortModel.length > 0) {
           const sort = sortModel[0];
@@ -908,13 +826,11 @@ const GenericDataGrid = ({
           loadData(1, currentPageSize);
         }
       } catch (error) {
-        console.warn('Sort model not available, skipping sort:', error);
         loadData(1, currentPageSize);
       }
     }
   }, [gridApi, currentPageSize, loadData]);
 
-  // Export function to download data as CSV
   const handleExport = useCallback(() => {
     if (!rowData || !Array.isArray(rowData) || rowData.length === 0) {
       console.warn('No data to export');
@@ -922,14 +838,12 @@ const GenericDataGrid = ({
     }
 
     try {
-      // Get the first row to determine structure
       const firstRow = rowData[0];
       if (!firstRow || !firstRow.data) {
         console.warn('Invalid data structure for export');
         return;
       }
 
-      // Get all columns except actions
       const rowDataItem = typeof firstRow.data === 'string' ? JSON.parse(firstRow.data) : firstRow.data;
       const columns = Object.keys(rowDataItem || {}).filter(col => col !== 'actions');
       
@@ -938,17 +852,14 @@ const GenericDataGrid = ({
         return;
       }
       
-      // Create CSV header
       const csvHeader = columns.join(',');
       
-      // Create CSV rows
       const csvRows = rowData.map(row => {
         if (!row || !row.data) return '';
         
         const rowDataItem = typeof row.data === 'string' ? JSON.parse(row.data) : row.data;
         return columns.map(col => {
           const value = rowDataItem[col];
-          // Handle values that contain commas, quotes, or newlines
           if (value === null || value === undefined) {
             return '';
           }
@@ -958,12 +869,10 @@ const GenericDataGrid = ({
           }
           return stringValue;
         }).join(',');
-      }).filter(row => row !== ''); // Remove empty rows
+      }).filter(row => row !== '');
       
-      // Combine header and rows
       const csvContent = [csvHeader, ...csvRows].join('\n');
       
-      // Create and download file
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
@@ -974,9 +883,7 @@ const GenericDataGrid = ({
       link.click();
       document.body.removeChild(link);
       
-      console.log('Export completed successfully');
     } catch (error) {
-      console.error('Export failed:', error);
     }
   }, [rowData, title]);
 
@@ -1112,7 +1019,6 @@ const GenericDataGrid = ({
               if (gridApi) {
                 gridApi.setFilterModel({});
               }
-              // Automatically reload data with default results
               loadData(1, currentPageSize);
             }}
             sx={{ 
@@ -1192,19 +1098,15 @@ const GenericDataGrid = ({
           sx={{ gap: 1 }}
         >
           {(() => {
-            // Group filters by field
             const fieldGroups = {};
             Object.entries(activeFilters).forEach(([key, value]) => {
               if (!value) return;
               
-              // Skip logic filters as they're handled with the main filters
               if (key.endsWith('_logic')) return;
               
-              // Parse the key format: "field_operator" (e.g., "Brand_startsWith", "Range_Km_greaterThan")
               const parts = key.split('_');
               if (parts.length < 2) return;
               
-              // Find the operator by looking for it in the key
               const validOperators = ['contains', 'equals', 'startsWith', 'endsWith', 'isEmpty', 'greaterThan', 'lessThan', 'greaterThanOrEqual', 'lessThanOrEqual'];
               let operator = '';
               let field = '';
@@ -1213,7 +1115,7 @@ const GenericDataGrid = ({
                 if (key.includes(op)) {
                   operator = op;
                   const operatorIndex = key.indexOf(op);
-                  field = key.substring(0, operatorIndex - 1); // Remove the underscore before operator
+                  field = key.substring(0, operatorIndex - 1);
                   break;
                 }
               }
@@ -1227,12 +1129,10 @@ const GenericDataGrid = ({
               fieldGroups[field].push({ key, operator, value, field });
             });
             
-            // Create chips for each field group
             return Object.entries(fieldGroups).map(([field, filters]) => {
               const column = columns.find(col => col.field === field);
               const fieldName = column?.headerName || field;
               
-              // Create a user-friendly operator name
               const operatorNames = {
                 'contains': 'contains',
                 'equals': 'equals',
@@ -1243,7 +1143,6 @@ const GenericDataGrid = ({
                 'lessThan': 'less than'
               };
               
-              // If multiple filters for same field, show them together
               if (filters.length > 1) {
                 const filterDescriptions = filters.map(f => {
                   const friendlyOperator = operatorNames[f.operator] || f.operator;
@@ -1252,7 +1151,6 @@ const GenericDataGrid = ({
                     : `${friendlyOperator} ${f.value}`;
                 });
                 
-                // Check the actual logic value for this field
                 const logicKey = `${field}_logic`;
                 const logicValue = activeFilters[logicKey];
                 const logicOperator = logicValue === 'AND' ? ' AND ' : ' OR ';
@@ -1267,7 +1165,6 @@ const GenericDataGrid = ({
                       console.log('Removing filters for field:', field);
                       console.log('Current activeFilters before removal:', activeFilters);
                       
-                      // Check if this will be the last filter pill before removing
                       const currentActiveFilters = Object.keys(activeFilters).filter(key => 
                         !key.endsWith('_logic') && activeFilters[key]
                       );
@@ -1280,7 +1177,6 @@ const GenericDataGrid = ({
                       console.log('Filters for this field:', filtersForThisField);
                       console.log('Will be last pill:', willBeLastPill);
                       
-                      // Remove all filters for this specific field from both states
                       setFilters(prev => {
                         const newFilters = { ...prev };
                         Object.keys(newFilters).forEach(filterKey => {
@@ -1305,20 +1201,17 @@ const GenericDataGrid = ({
                         return newActiveFilters;
                       });
                       
-                      // Clear the filter in AG Grid
                       if (gridApi) {
                         const filterModel = gridApi.getFilterModel();
                         delete filterModel[field];
                         gridApi.setFilterModel(filterModel);
                       }
                       
-                      // Handle data reload based on whether this was the last pill
                       setTimeout(() => {
                         if (willBeLastPill) {
                           console.log('Last filter removed - fetching initial data');
-                          // Clear search and fetch initial data
                           setSearch('');
-                          loadData(1, currentPageSize, null, null, ''); // Pass empty string for search
+                          loadData(1, currentPageSize, null, null, '');
                         } else {
                           console.log('Filters remaining - reloading with remaining filters');
                           loadData(1, currentPageSize);
@@ -1341,7 +1234,6 @@ const GenericDataGrid = ({
                   />
                 );
               } else {
-                // Single filter for this field
                 const filter = filters[0];
                 const friendlyOperator = operatorNames[filter.operator] || filter.operator;
                 
@@ -1357,7 +1249,6 @@ const GenericDataGrid = ({
                       console.log('Removing single filter for field:', field);
                       console.log('Current activeFilters before removal:', activeFilters);
                       
-                      // Check if this will be the last filter pill before removing
                       const currentActiveFilters = Object.keys(activeFilters).filter(key => 
                         !key.endsWith('_logic') && activeFilters[key]
                       );
@@ -1370,7 +1261,6 @@ const GenericDataGrid = ({
                       console.log('Filters for this field:', filtersForThisField);
                       console.log('Will be last pill:', willBeLastPill);
                       
-                      // Remove all filters for this specific field from both states
                       setFilters(prev => {
                         const newFilters = { ...prev };
                         Object.keys(newFilters).forEach(filterKey => {
@@ -1395,20 +1285,17 @@ const GenericDataGrid = ({
                         return newActiveFilters;
                       });
                       
-                      // Clear the filter in AG Grid
                       if (gridApi) {
                         const filterModel = gridApi.getFilterModel();
                         delete filterModel[field];
                         gridApi.setFilterModel(filterModel);
                       }
                       
-                      // Handle data reload based on whether this was the last pill
                       setTimeout(() => {
                         if (willBeLastPill) {
                           console.log('Last filter removed - fetching initial data');
-                          // Clear search and fetch initial data
                           setSearch('');
-                          loadData(1, currentPageSize, null, null, ''); // Pass empty string for search
+                          loadData(1, currentPageSize, null, null, '');
                         } else {
                           console.log('Filters remaining - reloading with remaining filters');
                           loadData(1, currentPageSize);
@@ -1707,7 +1594,7 @@ const GenericDataGrid = ({
             Cancel
           </Button>
           <Button
-            onClick={() => handleDelete(deleteItem?.id)}
+            onClick={() => handleDelete(deleteItem)}
             color="error"
             variant="contained"
             startIcon={<DeleteIcon />}

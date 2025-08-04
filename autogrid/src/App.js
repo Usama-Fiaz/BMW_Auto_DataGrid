@@ -10,7 +10,6 @@ import Dashboard from './components/Dashboard';
 
 import DataDetailPage from './components/DataDetailPage';
 
-// Modern professional theme
 const theme = createTheme({
   palette: {
     mode: 'light',

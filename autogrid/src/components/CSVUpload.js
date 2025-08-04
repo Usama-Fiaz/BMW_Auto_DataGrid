@@ -28,7 +28,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import InfoIcon from '@mui/icons-material/Info';
 import CloseIcon from '@mui/icons-material/Close';
 
-const API_URL = 'http://localhost:5001/api/data'; // Updated to universal endpoint
+const API_URL = 'http://localhost:5001/api/data';
 
 export default function CSVUpload({ onUploadSuccess, onUploadError, selectedGrid, isReplacement = false }) {
   const { token } = useAuth();
@@ -84,13 +84,11 @@ export default function CSVUpload({ onUploadSuccess, onUploadError, selectedGrid
       const formData = new FormData();
       formData.append('csvFile', file);
       
-      // If uploading to a specific grid, add the grid name and ID
       if (selectedGrid) {
         formData.append('name', selectedGrid.name);
         formData.append('gridId', selectedGrid.id);
       }
 
-      // If this is a replacement, add the replacement flag
       if (isReplacement) {
         formData.append('isReplacement', 'true');
       }
@@ -100,7 +98,6 @@ export default function CSVUpload({ onUploadSuccess, onUploadError, selectedGrid
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      // Use grid-specific upload if a grid is selected, otherwise use general upload
       const uploadUrl = selectedGrid 
         ? `http://localhost:5001/api/grids/create`
         : `${API_URL}/upload`;

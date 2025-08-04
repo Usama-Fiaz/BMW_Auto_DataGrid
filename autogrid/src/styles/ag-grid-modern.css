@@ -1,10 +1,6 @@
-/* AG Grid Modern Styling */
-
-/* Import AG Grid base styles */
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-/* Modern Header Styling */
 .ag-theme-alpine .ag-header {
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   border-bottom: 2px solid #475569;
@@ -57,7 +53,6 @@
   color: #3b82f6;
 }
 
-/* Modern Cell Styling */
 .ag-theme-alpine .ag-cell {
   padding: 12px 16px;
   border-right: 1px solid #f1f5f9;
@@ -84,7 +79,6 @@
   border-left: 4px solid #1976d2;
 }
 
-/* Filter Popup Styling - AG Grid Documentation Layout */
 .ag-theme-alpine .ag-popup-child {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -97,7 +91,6 @@
   overflow: hidden;
 }
 
-/* Filter Header */
 .ag-theme-alpine .ag-filter-header {
   background: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
@@ -119,13 +112,11 @@
   font-size: 14px;
 }
 
-/* Filter Body */
 .ag-theme-alpine .ag-filter-body {
   padding: 20px;
   background: #ffffff;
 }
 
-/* Filter Condition Container */
 .ag-theme-alpine .ag-filter-condition {
   margin-bottom: 20px;
   padding: 16px;
@@ -138,7 +129,6 @@
   margin-bottom: 16px;
 }
 
-/* Filter Condition Label */
 .ag-theme-alpine .ag-filter-condition-label {
   font-weight: 600;
   color: #374151;
@@ -148,7 +138,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Filter Option Dropdown */
 .ag-theme-alpine .ag-filter-condition-operator {
   margin-bottom: 12px;
 }
@@ -171,7 +160,6 @@
   outline: none;
 }
 
-/* Filter Input Field */
 .ag-theme-alpine .ag-filter-body input {
   width: 100%;
   padding: 10px 12px;
@@ -194,7 +182,6 @@
   color: #94a3b8;
 }
 
-/* Logical Operator Section */
 .ag-theme-alpine .ag-filter-join-operator {
   margin: 16px 0;
   padding: 12px 16px;
@@ -212,7 +199,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Radio Button Styling for AND/OR */
 .ag-theme-alpine .ag-filter-join-operator input[type="radio"] {
   margin-right: 8px;
   margin-left: 0;
@@ -228,7 +214,6 @@
   align-items: center;
 }
 
-/* Filter Buttons */
 .ag-theme-alpine .ag-filter-apply-panel {
   background: #f8fafc;
   border-top: 1px solid #e2e8f0;
@@ -274,7 +259,6 @@
   border-color: #cbd5e1;
 }
 
-/* Grid Container */
 .ag-theme-alpine {
   border-radius: 8px;
   overflow: hidden;
@@ -283,7 +267,6 @@
   background: #ffffff;
 }
 
-/* Filter Dropdown Animation */
 .ag-theme-alpine .ag-popup-child {
   animation: slideIn 0.3s ease-out;
 }

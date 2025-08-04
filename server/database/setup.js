@@ -3,14 +3,13 @@ require('dotenv').config();
 
 const createTables = async () => {
   const connection = await mysql.createConnection({
-    host: '127.0.0.1', // Force IPv4
+    host: '127.0.0.1',
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
   });
 
   try {
-    // Create users table
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS users (
         id VARCHAR(255) PRIMARY KEY,
@@ -23,7 +22,6 @@ const createTables = async () => {
       )
     `);
 
-    // Create universal_data table
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS universal_data (
         id VARCHAR(36) PRIMARY KEY,
@@ -38,7 +36,6 @@ const createTables = async () => {
       )
     `);
 
-    // Create user_grids table
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS user_grids (
         id VARCHAR(36) PRIMARY KEY,
@@ -51,14 +48,12 @@ const createTables = async () => {
       )
     `);
 
-    // Add column_order column if it doesn't exist
     try {
       await connection.execute(`
         ALTER TABLE user_grids ADD COLUMN column_order JSON DEFAULT NULL
       `);
       console.log('Column order column added to user_grids table');
     } catch (error) {
-      // Column might already exist, ignore error
       console.log('Column order column might already exist');
     }
 
