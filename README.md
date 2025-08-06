@@ -1,35 +1,30 @@
-# BMW Aptitude Test - Universal Data Management System
+# BMW Aptitude Test - Data Management System
 
-A modern, professional **Generic DataGrid** application built with React, Material-UI, and AG Grid for BMW's IT Internship position. This system can handle any CSV data structure with advanced filtering, search, and multi-tenant capabilities.
+This is my submission for the BMW IT Internship position. I built a web application that can upload and manage CSV data with a focus on making it flexible enough to handle different types of data structures.
 
-## 🚀 **Key Features**
+The main idea was to create something that could work with any CSV file - whether it's car data, employee records, or whatever else you might want to upload and filter through.
 
-### **📊 Generic DataGrid System**
-- **Universal CSV Support**: Handles any CSV structure - employees, products, sales data, or custom data
-- **Automatic Column Detection**: Frontend automatically detects and displays columns from any CSV structure
-- **JSON Storage**: All data stored as JSON in a single database column for maximum flexibility
-- **Multi-tenant Architecture**: Each user can only access their own data
+## What I Built
 
-### **🔐 Authentication & Security**
-- **Firebase Authentication**: Secure user login with Google
-- **JWT Tokens**: Session management with secure token-based authentication
-- **User Data Isolation**: Each user can only access their own data
-- **Protected Routes**: Automatic redirection for unauthenticated users
+### Data Grid System
+I made a system that can handle any CSV structure you throw at it. Upload a file and it automatically figures out what columns you have and displays them properly. All the data gets stored as JSON in MySQL, which gives a lot of flexibility for different data types.
 
-### **📈 Advanced Filtering & Search**
-- **Backend Filtering**: All filtering done on the server for performance
-- **Multiple Filter Types**: Contains, equals, starts with, ends with, greater than, less than
-- **OR/AND Logic**: Multiple filters on same field use OR logic, different fields use AND logic
-- **Case-Insensitive**: Filters work with both uppercase and lowercase
-- **Numeric Support**: Proper handling of number-based filters
-- **Real-time Updates**: Instant results as you type
+Each user only sees their own data - I set up proper authentication so multiple people can use it without seeing each other's uploads.
 
-### **🎨 Modern UI/UX**
-- **Material-UI Design**: Professional, modern interface
-- **Responsive Layout**: Works on desktop and mobile
-- **Dark/Light Theme**: Consistent theming throughout
-- **Loading States**: Smooth loading indicators
-- **Error Handling**: User-friendly error messages
+### Authentication
+Used Firebase for Google login since it's reliable and most people already have Google accounts. Added JWT tokens for session management and made sure all the routes are properly protected.
+
+### Filtering and Search
+This was probably the trickiest part. I implemented server-side filtering that supports:
+- Text searches (contains, equals, starts with, ends with)
+- Number comparisons (greater than, less than, equals)
+- Multiple filters that work together logically
+- Case-insensitive search
+
+The filtering happens on the backend for better performance, especially with larger datasets.
+
+### Interface
+Built with React and Material-UI to keep it looking professional. It's responsive and includes proper loading states and error handling. Nothing too fancy, but it works well.
 
 ## 🏗️ **Architecture**
 
