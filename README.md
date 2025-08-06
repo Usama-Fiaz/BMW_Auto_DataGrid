@@ -203,7 +203,3 @@ JWT_SECRET=your_jwt_secret
 - **Caching Layer**: Redis for improved performance
 - **Microservices**: Split into smaller, focused services
 - **Real-time Updates**: WebSocket for live data updates
-
----
-
-**Built with ❤️ for BMW's IT Internship position** 
